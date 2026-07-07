@@ -13,7 +13,6 @@ let currentSessionId = null;
 let isAdminAuth = sessionStorage.getItem('admin_auth') === 'true';
 let keystrokeCount = 0;
 let typingTimer = null;
-let sessionStart = null;
 let sessionKeys = 0;
 let isMonitoring = false;
 
@@ -22,135 +21,80 @@ function generateDeviceId() {
 }
 
 async function init() {
-  // Load from localStorage
   deviceId = localStorage.getItem('keylogger_device_id');
   const hasConsent = localStorage.getItem('keylogger_consent');
   keystrokeCount = parseInt(localStorage.getItem('keystroke_count') || '0');
 
-  // Generate device ID if needed
   if (!deviceId) {
     deviceId = generateDeviceId();
     localStorage.setItem('keylogger_device_id', deviceId);
   }
 
-  // Show consent modal if no consent
   if (!hasConsent) {
     document.getElementById('start-modal').classList.add('active');
   } else {
     startMonitoring();
   }
 
-  // Update UI
   document.getElementById('device-id').textContent = deviceId;
   document.getElementById('keystroke-count').textContent = keystrokeCount;
 
   initRouter();
   initAuth();
-  initTypingArea();
   loadSessionCount();
   loadTodayCount();
 }
 
 function startMonitoring() {
   isMonitoring = true;
-
-  // Update status
   document.getElementById('status-dot').classList.add('active');
-  document.getElementById('status-text').textContent = 'Recording - Type below';
-  document.getElementById('device-status').textContent = 'Active';
-  document.getElementById('device-status').style.color = 'var(--success)';
-
-  const statusBadge = document.getElementById('status-badge');
-  statusBadge.classList.add('active');
-  document.getElementById('badge-text').textContent = 'Live';
-
-  // Global keydown listener for the page
-  document.addEventListener('keydown', handleGlobalKey);
-
+  document.getElementById('status-text').textContent = 'Recording';
+  document.getElementById('status-badge').textContent = 'Active';
+  document.getElementById('status-badge').classList.add('active');
+  document.addEventListener('keydown', handleKey);
   console.log('Monitoring started:', deviceId);
 }
 
-// Handle keys typed outside the textarea (for testing)
-async function handleGlobalKey(e) {
-  // Don't process if typing in textarea (handled separately)
-  if (e.target.id === 'typing-area') return;
-  // Don't process password inputs
-  if (e.target.tagName === 'INPUT' && e.target.type === 'password') return;
+async function handleKey(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (!isMonitoring) return;
 
-  // Process the keystroke
-  await processKeystroke(e.key, e.keyCode);
-}
-
-// Initialize the typing area
-function initTypingArea() {
-  const typingArea = document.getElementById('typing-area');
-  const liveText = document.getElementById('live-text');
-
-  if (!typingArea) return;
-
-  typingArea.addEventListener('input', async (e) => {
-    const text = e.target.value;
-
-    // Update live preview
-    if (text.length > 0) {
-      liveText.textContent = text.length > 100 ? text.substring(0, 100) + '...' : text;
-    } else {
-      liveText.textContent = 'Start typing above...';
-    }
-  });
-
-  typingArea.addEventListener('keydown', async (e) => {
-    // Process each keystroke
-    await processKeystroke(e.key, e.keyCode);
-  });
-}
-
-// Process and save a keystroke
-async function processKeystroke(key, keyCode) {
-  showFlash(key);
+  showFlash(e.key);
 
   if (typingTimer) clearTimeout(typingTimer);
 
-  // Create session if needed
   if (!currentSessionId) {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('typing_sessions')
         .insert([{ device_id: deviceId, session_start: new Date().toISOString() }])
         .select('id')
         .single();
 
-      if (error) {
-        console.error('Session error:', error);
-        return;
-      }
-
       if (data) {
         currentSessionId = data.id;
-        sessionStart = Date.now();
         sessionKeys = 0;
       }
     } catch (err) {
-      console.error('Session creation failed:', err);
+      console.error('Session error:', err);
       return;
     }
   }
 
   sessionKeys++;
 
-  // Save keystroke
   try {
     await supabase.from('keystroke_logs').insert([{
       session_id: deviceId,
-      key_text: key,
-      key_code: keyCode,
+      key_text: e.key,
+      key_code: e.keyCode,
       timestamp: new Date().toISOString(),
       page_url: window.location.href,
       device_id: deviceId,
       typing_session_id: currentSessionId
     }]);
   } catch (err) {
-    console.error('Keystroke save failed:', err);
+    console.error('Save error:', err);
   }
 
   keystrokeCount++;
@@ -169,7 +113,7 @@ async function endSession() {
       .update({ session_end: new Date().toISOString(), key_count: sessionKeys })
       .eq('id', currentSessionId);
   } catch (err) {
-    console.error('Session end failed:', err);
+    console.error('End session error:', err);
   }
 
   currentSessionId = null;
@@ -183,10 +127,9 @@ async function loadSessionCount() {
       .from('typing_sessions')
       .select('*', { count: 'exact', head: true })
       .eq('device_id', deviceId);
-
     document.getElementById('session-count').textContent = count || 0;
   } catch (err) {
-    console.error('Session count failed:', err);
+    console.error('Session count error:', err);
   }
 }
 
@@ -198,15 +141,14 @@ async function loadTodayCount() {
       .select('*', { count: 'exact', head: true })
       .eq('device_id', deviceId)
       .gte('timestamp', today);
-
     document.getElementById('today-count').textContent = count || 0;
   } catch (err) {
-    console.error('Today count failed:', err);
+    console.error('Today count error:', err);
   }
 }
 
 function showFlash(key) {
-  const flash = document.getElementById('keystroke-flash');
+  const flash = document.getElementById('flash');
   const keyEl = document.getElementById('flash-key');
   keyEl.textContent = key.length === 1 ? key : `[${key}]`;
   flash.classList.add('active');
@@ -214,7 +156,7 @@ function showFlash(key) {
 }
 
 function initRouter() {
-  const navLinks = document.querySelectorAll('.nav-link');
+  const tabs = document.querySelectorAll('.tab');
   const pages = document.querySelectorAll('.page');
 
   function showPage(name) {
@@ -224,31 +166,24 @@ function initRouter() {
     }
 
     pages.forEach(p => p.classList.remove('active'));
-    navLinks.forEach(l => l.classList.remove('active'));
+    tabs.forEach(t => t.classList.remove('active'));
 
-    const targetPage = document.getElementById(`${name}-page`);
-    const targetLink = document.querySelector(`[data-page="${name}"]`);
+    const page = document.getElementById(`${name}-page`);
+    const tab = document.querySelector(`[data-page="${name}"]`);
 
-    if (targetPage) targetPage.classList.add('active');
-    if (targetLink) targetLink.classList.add('active');
+    if (page) page.classList.add('active');
+    if (tab) tab.classList.add('active');
 
-    if (name === 'admin') {
-      loadAdmin();
-    }
+    if (name === 'admin') loadAdmin();
   }
 
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const page = link.dataset.page;
-      showPage(page);
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      showPage(tab.dataset.page);
     });
   });
 
-  // Check initial hash
-  if (window.location.hash === '#admin') {
-    showPage('admin');
-  }
+  if (window.location.hash === '#admin') showPage('admin');
 }
 
 function initAuth() {
@@ -267,15 +202,14 @@ function initAuth() {
       document.getElementById('admin-password').value = '';
       error.textContent = '';
 
-      // Navigate to admin page
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById('admin-page').classList.add('active');
       document.querySelector('[data-page="admin"]').classList.add('active');
 
       loadAdmin();
     } else {
-      error.textContent = 'Wrong password. Please try again.';
+      error.textContent = 'Wrong password';
     }
   });
 
@@ -287,9 +221,7 @@ function initAuth() {
   });
 
   modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      modal.classList.remove('active');
-    }
+    if (e.target === modal) modal.classList.remove('active');
   });
 }
 
@@ -301,7 +233,6 @@ async function loadAdmin() {
   if (!isAdminAuth) return;
 
   try {
-    // Load stats
     const { count: total } = await supabase
       .from('keystroke_logs')
       .select('*', { count: 'exact', head: true });
@@ -329,7 +260,7 @@ async function loadAdmin() {
 
     loadDevices();
   } catch (err) {
-    console.error('Admin load failed:', err);
+    console.error('Admin load error:', err);
   }
 }
 
@@ -339,53 +270,42 @@ async function loadDevices() {
       .from('typing_sessions')
       .select('device_id, session_start, key_count');
 
-    if (!data) return;
+    const container = document.getElementById('devices-list');
+    container.innerHTML = '';
+
+    if (!data?.length) {
+      container.innerHTML = '<div class="loading">No devices yet</div>';
+      return;
+    }
 
     const map = {};
     data.forEach(s => {
       if (!s.device_id) return;
-      if (!map[s.device_id]) {
-        map[s.device_id] = { sessions: 0, keys: 0, last: s.session_start };
-      }
+      if (!map[s.device_id]) map[s.device_id] = { sessions: 0, keys: 0 };
       map[s.device_id].sessions++;
       map[s.device_id].keys += s.key_count || 0;
-      if (new Date(s.session_start) > new Date(map[s.device_id].last)) {
-        map[s.device_id].last = s.session_start;
-      }
     });
-
-    const container = document.getElementById('devices-list');
-    container.innerHTML = '';
-
-    if (Object.keys(map).length === 0) {
-      container.innerHTML = '<div class="loading-state"><span>No devices registered yet</span></div>';
-      return;
-    }
 
     Object.entries(map).forEach(([id, stats]) => {
       const card = document.createElement('div');
-      card.className = 'device-card';
+      card.className = 'dcard';
       card.innerHTML = `
-        <code>${id.substring(0, 20)}...</code>
-        <div class="device-card-stats">
-          <span>${stats.sessions} sessions</span>
-          <span>${stats.keys} keys</span>
-        </div>
+        <code>${id.substring(0, 18)}...</code>
+        <div class="dcard-meta">${stats.sessions} sessions · ${stats.keys} keys</div>
       `;
       card.addEventListener('click', () => loadSessions(id));
       container.appendChild(card);
     });
   } catch (err) {
-    console.error('Devices load failed:', err);
+    console.error('Devices load error:', err);
   }
 }
 
 async function loadSessions(deviceIdParam) {
   selectedDevice = deviceIdParam;
 
-  document.getElementById('devices-container').classList.add('hidden');
-  document.getElementById('sessions-container').classList.remove('hidden');
-  document.getElementById('keystrokes-container').classList.add('hidden');
+  document.getElementById('devices-box').classList.add('hidden');
+  document.getElementById('sessions-box').classList.remove('hidden');
   document.getElementById('sessions-title').textContent = `Device: ${deviceIdParam.substring(0, 15)}...`;
 
   try {
@@ -399,25 +319,25 @@ async function loadSessions(deviceIdParam) {
     container.innerHTML = '';
 
     if (!data?.length) {
-      container.innerHTML = '<div class="loading-state"><span>No sessions found</span></div>';
+      container.innerHTML = '<div class="loading">No sessions</div>';
       return;
     }
 
     data.forEach(s => {
       const card = document.createElement('div');
-      card.className = 'session-card';
+      card.className = 'scard';
       const dur = s.session_end
         ? Math.round((new Date(s.session_end) - new Date(s.session_start)) / 1000) + 's'
         : 'Active';
 
       card.innerHTML = `
         <div>
-          <div class="session-time">${new Date(s.session_start).toLocaleString()}</div>
-          <div class="session-meta">Duration: ${dur}</div>
+          <div class="scard-time">${new Date(s.session_start).toLocaleString()}</div>
+          <div class="scard-meta">Duration: ${dur}</div>
         </div>
-        <div class="session-keys">
-          <div class="session-key-count">${s.key_count || 0}</div>
-          <div class="session-key-label">keys</div>
+        <div class="scount">
+          <div class="scount-num">${s.key_count || 0}</div>
+          <div class="scount-lbl">keys</div>
         </div>
       `;
 
@@ -425,15 +345,15 @@ async function loadSessions(deviceIdParam) {
       container.appendChild(card);
     });
   } catch (err) {
-    console.error('Sessions load failed:', err);
+    console.error('Sessions load error:', err);
   }
 }
 
 async function loadKeystrokes(sessionId) {
   selectedSession = sessionId;
 
-  document.getElementById('sessions-container').classList.add('hidden');
-  document.getElementById('keystrokes-container').classList.remove('hidden');
+  document.getElementById('sessions-box').classList.add('hidden');
+  document.getElementById('keystrokes-box').classList.remove('hidden');
 
   try {
     const { data } = await supabase
@@ -446,7 +366,7 @@ async function loadKeystrokes(sessionId) {
     container.innerHTML = '';
 
     if (!data?.length) {
-      container.innerHTML = '<div class="loading-state"><span>No keystrokes found</span></div>';
+      container.innerHTML = '<div class="loading">No keystrokes</div>';
       return;
     }
 
@@ -454,38 +374,27 @@ async function loadKeystrokes(sessionId) {
     data.forEach(log => {
       const time = new Date(log.timestamp).toLocaleTimeString();
       if (time !== lastTime) {
-        container.innerHTML += `<span class="key-timestamp">${time}</span>`;
+        container.innerHTML += `<span class="ktime">${time}</span>`;
         lastTime = time;
       }
       const k = log.key_text;
       if (k.length === 1) {
-        container.innerHTML += `<span class="key-item">${escapeHtml(k)}</span>`;
+        container.innerHTML += `<span class="key">${escapeHtml(k)}</span>`;
       } else {
-        container.innerHTML += `<span class="key-item special">[${formatKey(k)}]</span>`;
+        container.innerHTML += `<span class="key sp">[${formatKey(k)}]</span>`;
       }
     });
   } catch (err) {
-    console.error('Keystrokes load failed:', err);
+    console.error('Keystrokes load error:', err);
   }
 }
 
 function formatKey(k) {
   const map = {
-    'Backspace': '⌫',
-    'Enter': '↵',
-    'Tab': '⇥',
-    'Shift': '⇧',
-    'Control': 'Ctrl',
-    'Alt': 'Alt',
-    'Meta': '⌘',
-    'Escape': 'Esc',
-    'Delete': 'Del',
-    'CapsLock': 'Caps',
-    'ArrowUp': '↑',
-    'ArrowDown': '↓',
-    'ArrowLeft': '←',
-    'ArrowRight': '→',
-    ' ': 'Space'
+    'Backspace': '⌫', 'Enter': '↵', 'Tab': '⇥', 'Shift': '⇧',
+    'Control': 'Ctrl', 'Alt': 'Alt', 'Meta': '⌘', 'Escape': 'Esc',
+    'Delete': 'Del', 'CapsLock': 'Caps', ' ': 'Space',
+    'ArrowUp': '↑', 'ArrowDown': '↓', 'ArrowLeft': '←', 'ArrowRight': '→'
   };
   return map[k] || k;
 }
@@ -496,18 +405,15 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Event handlers
-
-// Start button
+// Event listeners
 document.getElementById('start-btn').addEventListener('click', () => {
   localStorage.setItem('keylogger_consent', 'true');
   document.getElementById('start-modal').classList.remove('active');
   startMonitoring();
 });
 
-// Reset button
 document.getElementById('reset-btn').addEventListener('click', () => {
-  if (confirm('Reset device? This will show the consent popup again and clear local data.')) {
+  if (confirm('Reset device?')) {
     localStorage.removeItem('keylogger_device_id');
     localStorage.removeItem('keylogger_consent');
     localStorage.removeItem('keystroke_count');
@@ -515,42 +421,35 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   }
 });
 
-// Back to devices
-document.getElementById('back-to-devices').addEventListener('click', () => {
-  document.getElementById('keystrokes-container').classList.add('hidden');
-  document.getElementById('sessions-container').classList.add('hidden');
-  document.getElementById('devices-container').classList.remove('hidden');
+document.getElementById('back-devices').addEventListener('click', () => {
+  document.getElementById('keystrokes-box').classList.add('hidden');
+  document.getElementById('sessions-box').classList.add('hidden');
+  document.getElementById('devices-box').classList.remove('hidden');
   selectedDevice = null;
   selectedSession = null;
 });
 
-// Back to sessions
-document.getElementById('back-to-sessions').addEventListener('click', () => {
+document.getElementById('back-sessions').addEventListener('click', () => {
   if (selectedDevice) {
-    document.getElementById('keystrokes-container').classList.add('hidden');
-    document.getElementById('sessions-container').classList.remove('hidden');
+    document.getElementById('keystrokes-box').classList.add('hidden');
+    document.getElementById('sessions-box').classList.remove('hidden');
     selectedSession = null;
   }
 });
 
-// Refresh button
-document.getElementById('refresh-btn').addEventListener('click', () => {
-  loadAdmin();
-});
+document.getElementById('refresh-btn').addEventListener('click', loadAdmin);
 
-// Clear all data
-document.getElementById('clear-all-btn').addEventListener('click', async () => {
-  if (!confirm('Delete ALL data? This cannot be undone.')) return;
-  if (!confirm('Are you absolutely sure? All keystrokes and sessions will be permanently deleted.')) return;
+document.getElementById('clear-btn').addEventListener('click', async () => {
+  if (!confirm('Delete ALL data?')) return;
+  if (!confirm('Are you sure? This cannot be undone.')) return;
 
   try {
     await supabase.from('keystroke_logs').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await supabase.from('typing_sessions').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     loadAdmin();
   } catch (err) {
-    console.error('Clear failed:', err);
+    console.error('Clear error:', err);
   }
 });
 
-// Initialize app
 document.addEventListener('DOMContentLoaded', init);
