@@ -3,233 +3,338 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parental Keyboard Monitor</title>
+  <title>KeyMonitor Pro - Parental Control System</title>
   <link rel="stylesheet" href="/src/styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Start Modal -->
-  <div id="start-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          <path d="M9 12l2 2 4-4"/>
-        </svg>
+  <!-- Consent Modal - Shows on first visit -->
+  <div id="consent-modal" class="modal">
+    <div class="modal-box">
+      <div class="modal-hero">
+        <img src="https://images.pexels.com/photos/2115217/pexels-photo-2115217.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Security Shield" class="modal-img">
+        <div class="modal-icon-overlay">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
       </div>
-      <h2>Parental Keyboard Monitor</h2>
-      <p class="modal-desc">Secure monitoring for devices you own.</p>
-      <div class="consent">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M12 16v-4M12 8h.01"/>
-        </svg>
-        <span>By clicking Start, you consent to monitoring for parental control purposes.</span>
+      <h1 class="modal-title">Parental Keyboard Monitor</h1>
+      <p class="modal-subtitle">Secure Monitoring for Your Family</p>
+      <div class="modal-features">
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <span>Real-time Tracking</span>
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Secure & Private</span>
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>Admin Dashboard</span>
+        </div>
       </div>
-      <button id="start-btn" class="btn-main">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <polygon points="5 3 19 12 5 21 5 3"/>
+      <p class="consent-text">
+        By clicking below, you consent to keyboard monitoring for parental control purposes on this device. Password fields are never recorded.
+      </p>
+      <button id="consent-btn" class="btn-consent">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
         </svg>
-        Start Monitoring
+        <span>Start Monitoring Now</span>
       </button>
+      <p class="trust-text">Trusted by Parents Worldwide</p>
     </div>
   </div>
 
   <!-- Admin Login Modal -->
-  <div id="login-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-icon login-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+  <div id="admin-modal" class="modal">
+    <div class="modal-box login-box">
+      <div class="login-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
       </div>
-      <h2>Admin Access</h2>
-      <form id="login-form">
-        <input type="password" id="admin-password" placeholder="Enter password" required>
-        <button type="submit" class="btn-main">Enter</button>
+      <h1 class="modal-title">Admin Access</h1>
+      <p class="modal-subtitle">Enter your password to continue</p>
+      <form id="admin-form">
+        <input type="password" id="admin-input" placeholder="Enter Admin Password" autocomplete="off">
+        <button type="submit" class="btn-consent">
+          <span>Access Dashboard</span>
+        </button>
       </form>
-      <p id="login-error"></p>
+      <p id="login-error" class="error-msg"></p>
     </div>
   </div>
 
-  <!-- Main App -->
-  <div class="app">
+  <!-- Main Application -->
+  <div class="app-container">
     <!-- Header -->
     <header class="header">
-      <div class="brand">
-        <div class="brand-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-name">KeyMonitor</span>
-          <span class="brand-tag">Parental Control</span>
+      <div class="header-left">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">KeyMonitor</span>
+            <span class="logo-tagline">Parental Control System</span>
+          </div>
         </div>
       </div>
-      <nav class="tabs">
-        <button class="tab active" data-page="monitor">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <nav class="header-nav">
+        <button class="nav-btn active" data-page="monitor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="2" y="3" width="20" height="14" rx="2"/>
             <path d="M8 21h8M12 17v4"/>
           </svg>
-          Monitor
+          <span>Monitor</span>
         </button>
-        <button class="tab" data-page="admin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="nav-btn" data-page="admin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="3"/>
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
-          Admin
+          <span>Admin</span>
         </button>
       </nav>
     </header>
 
     <!-- Monitor Page -->
-    <main id="monitor-page" class="page active">
-      <div class="content">
-        <!-- Status -->
-        <div class="status-bar">
-          <div class="status-left">
-            <span class="status-dot" id="status-dot"></span>
-            <span class="status-text" id="status-text">Ready</span>
-          </div>
-          <span class="status-badge" id="status-badge">Inactive</span>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats">
-          <div class="stat">
-            <span class="stat-num" id="keystroke-count">0</span>
-            <span class="stat-lbl">Keystrokes</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num" id="session-count">0</span>
-            <span class="stat-lbl">Sessions</span>
-          </div>
-          <div class="stat">
-            <span class="stat-num" id="today-count">0</span>
-            <span class="stat-lbl">Today</span>
+    <section id="monitor-page" class="page active">
+      <div class="page-content">
+        <!-- Status Banner -->
+        <div class="status-banner">
+          <div class="status-info">
+            <div class="status-indicator">
+              <div class="status-dot" id="status-dot"></div>
+              <span class="status-label" id="status-label">Ready to Monitor</span>
+            </div>
+            <span class="status-badge" id="status-badge">Inactive</span>
           </div>
         </div>
 
-        <!-- Device Info -->
-        <div class="info-card">
-          <h3>Device ID</h3>
-          <code id="device-id">Loading...</code>
-          <button id="reset-btn" class="btn-sm">Reset Device</button>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                <path d="M2 2l7.586 7.586"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="keystroke-count">0</div>
+            <div class="stat-label">Total Keystrokes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="session-count">0</div>
+            <div class="stat-label">Sessions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="stat-value" id="today-count">0</div>
+            <div class="stat-label">Today</div>
+          </div>
         </div>
 
-        <!-- Extension Instructions - PROMINENT -->
-        <div class="extension-box">
-          <div class="ext-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 16v-4M12 8h.01"/>
-            </svg>
+        <!-- Device Card -->
+        <div class="device-card">
+          <div class="device-header">
+            <h3>Device Information</h3>
+            <span class="device-status">Active</span>
+          </div>
+          <div class="device-id-wrapper">
+            <label>Device Identifier</label>
+            <code id="device-id">Generating...</code>
+          </div>
+          <button id="resetBtn" class="btn-reset">Reset Device</button>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="instructions-card">
+          <div class="instructions-header">
+            <div class="instructions-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            </div>
             <div>
-              <h3>Install Browser Extension</h3>
-              <p>Required for full browser monitoring</p>
+              <h3>How It Works</h3>
+              <p>Simple 3-step monitoring setup</p>
             </div>
           </div>
-          <p class="ext-note">The web app monitors this page only. Install the extension to capture keystrokes from ALL tabs automatically.</p>
-          <ol class="ext-steps">
-            <li>
-              <span class="num">1</span>
-              <span>Open Chrome and type: <code>chrome://extensions/</code></span>
-            </li>
-            <li>
-              <span class="num">2</span>
-              <span>Turn ON <strong>"Developer mode"</strong> (top right switch)</span>
-            </li>
-            <li>
-              <span class="num">3</span>
-              <span>Click <strong>"Load unpacked"</strong> button</span>
-            </li>
-            <li>
-              <span class="num">4</span>
-              <span>Select the <code>extension</code> folder from this project</span>
-            </li>
-            <li>
-              <span class="num">5</span>
-              <span>Click the extension icon and press <strong>"Start Monitoring"</strong></span>
-            </li>
-          </ol>
-          <div class="ext-success">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <h4>Click Start Monitoring</h4>
+                <p>Click the button in the popup to begin tracking</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <h4>Type Anywhere on This Page</h4>
+                <p>All keystrokes are captured automatically</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <h4>View in Admin Dashboard</h4>
+                <p>Click Admin button, enter password to view all data</p>
+              </div>
+            </div>
+          </div>
+          <div class="success-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
               <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
-            <span>After installation, all browser tabs will be monitored automatically.</span>
+            <span>Data saves automatically - works even after refresh!</span>
           </div>
         </div>
       </div>
-    </main>
+    </section>
 
     <!-- Admin Page -->
-    <main id="admin-page" class="page">
-      <div class="content">
-        <div class="admin-top">
+    <section id="admin-page" class="page">
+      <div class="page-content">
+        <!-- Admin Header -->
+        <div class="admin-header">
           <h2>Admin Dashboard</h2>
-          <button id="logout-btn" class="btn-sm">Logout</button>
+          <button id="logoutBtn" class="btn-logout">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+          </button>
         </div>
 
         <!-- Admin Stats -->
-        <div class="admin-stats">
-          <div class="astat">
-            <span class="astat-num" id="total-keystrokes">0</span>
-            <span class="astat-lbl">Total Keystrokes</span>
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <img src="https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Keyboard" class="stat-img">
+            <div class="stat-overlay">
+              <div class="stat-num" id="total-keystrokes">0</div>
+              <div class="stat-text">Total Keystrokes</div>
+            </div>
           </div>
-          <div class="astat">
-            <span class="astat-num" id="total-devices">0</span>
-            <span class="astat-lbl">Devices</span>
+          <div class="admin-stat-card">
+            <img src="https://images.pexels.com/photos/1710535/pexels-photo-1710535.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Devices" class="stat-img">
+            <div class="stat-overlay">
+              <div class="stat-num" id="total-devices">0</div>
+              <div class="stat-text">Devices</div>
+            </div>
           </div>
-          <div class="astat">
-            <span class="astat-num" id="total-sessions">0</span>
-            <span class="astat-lbl">Sessions</span>
+          <div class="admin-stat-card">
+            <img src="https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Sessions" class="stat-img">
+            <div class="stat-overlay">
+              <div class="stat-num" id="total-sessions">0</div>
+              <div class="stat-text">Sessions</div>
+            </div>
           </div>
-          <div class="astat">
-            <span class="astat-num" id="today-keystrokes">0</span>
-            <span class="astat-lbl">Today</span>
+          <div class="admin-stat-card">
+            <img src="https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=200" alt="Calendar" class="stat-img">
+            <div class="stat-overlay">
+              <div class="stat-num" id="today-keystrokes">0</div>
+              <div class="stat-text">Today</div>
+            </div>
           </div>
         </div>
 
-        <!-- Devices -->
-        <div id="devices-box" class="section">
-          <div class="section-head">
-            <h3>Devices</h3>
-            <button id="refresh-btn" class="btn-sm">Refresh</button>
+        <!-- Devices Section -->
+        <div id="devices-section" class="section-card">
+          <div class="section-header">
+            <h3>Monitored Devices</h3>
+            <button id="refreshBtn" class="btn-refresh">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 2v6h-6M3 22v-6h6"/>
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 12a9 9 0 0 1-15 6.7L3 16"/>
+              </svg>
+              Refresh
+            </button>
           </div>
-          <div id="devices-list" class="devices"></div>
+          <div id="devices-list" class="devices-grid"></div>
         </div>
 
-        <!-- Sessions -->
-        <div id="sessions-box" class="section hidden">
-          <button id="back-devices" class="btn-back">← Back to Devices</button>
+        <!-- Sessions Section -->
+        <div id="sessions-section" class="section-card hidden">
+          <button id="backDevices" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Devices
+          </button>
           <h3 id="sessions-title">Sessions</h3>
-          <div id="sessions-list" class="sessions"></div>
+          <div id="sessions-list" class="sessions-list"></div>
         </div>
 
-        <!-- Keystrokes -->
-        <div id="keystrokes-box" class="section hidden">
-          <button id="back-sessions" class="btn-back">← Back to Sessions</button>
-          <h3>Keystrokes</h3>
-          <div id="keystrokes-list" class="keystrokes"></div>
+        <!-- Keystrokes Section -->
+        <div id="keystrokes-section" class="section-card hidden">
+          <button id="backSessions" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Sessions
+          </button>
+          <h3>Recorded Keystrokes</h3>
+          <div id="keystrokes-list" class="keystrokes-display"></div>
         </div>
 
         <!-- Danger Zone -->
-        <div class="danger-box">
-          <h4>Danger Zone</h4>
-          <p>Permanently delete all recorded data.</p>
-          <button id="clear-btn" class="btn-danger">Clear All Data</button>
+        <div class="danger-zone">
+          <div class="danger-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <h4>Danger Zone</h4>
+          </div>
+          <p>Permanently delete all recorded data. This action cannot be undone.</p>
+          <button id="clearBtn" class="btn-danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Clear All Data
+          </button>
         </div>
       </div>
-    </main>
+    </section>
   </div>
 
-  <!-- Flash notification -->
-  <div id="flash" class="flash">
+  <!-- Keystroke Flash Notification -->
+  <div id="flash" class="flash-msg">
     <span id="flash-key"></span> captured
   </div>
 
