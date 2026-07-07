@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      width: 280px;
+      background: #0a0a12;
+      color: #f1f5f9;
+      padding: 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2a2a42;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg {
+      width: 20px;
+      height: 20px;
+      color: white;
+    }
+
+    .logo-text { line-height: 1.3; }
+    .logo-name { font-size: 15px; font-weight: 800; display: block; }
+    .logo-sub { font-size: 11px; color: #64748b; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #18182a;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #2a2a42;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #64748b;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .dot.on {
+      background: #10b981;
+      box-shadow: 0 0 10px rgba(16,185,129,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .status-text { font-size: 13px; font-weight: 600; }
+
+    #toggle-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    #toggle-btn.start {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+    }
+
+    #toggle-btn.stop {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 16px rgba(239,68,68,0.3);
+    }
+
+    #toggle-btn:hover { transform: translateY(-1px); }
+
+    .note {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="logo-name">KeyMonitor</span>
+      <span class="logo-sub">Parental Control</span>
+    </div>
+  </div>
+
+  <div class="status">
+    <div class="dot" id="dot"></div>
+    <span class="status-text" id="status-text">Monitoring Off</span>
+  </div>
+
+  <button id="toggle-btn" class="start">Start Monitoring</button>
+
+  <p class="note">Captures keystrokes from all browser tabs.<br>View data in the Admin Dashboard.</p>
+
+  <script src="popup.js"></script>
+</body>
+</html>

