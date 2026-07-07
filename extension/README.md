@@ -1,222 +1,101 @@
 # Parental Keyboard Monitor
 
-A professional parental control application for monitoring keyboard activity on devices you own.
+**Monitor keyboard activity instantly - no technical knowledge required.**
 
 ---
 
-## IMPORTANT: What This App Does
+## How to Start (3 Simple Steps)
 
-This app records all keyboard strokes typed on a device and saves them to a secure cloud database. It is designed for:
+### Step 1: Open the App
+Double-click the application or open `index.html` in your browser. That's it!
 
-- **Parents** monitoring their children's computer activity
-- **Device owners** tracking keyboard usage on their own devices
+### Step 2: Click "Start Monitoring"
+A popup will appear. Click the **"Start Monitoring Now"** button.
 
-**This is NOT malware.** It is a legitimate parental control tool that:
-- Requires explicit user consent before monitoring
-- Stores data securely in a cloud database
-- Can be uninstalled at any time
-- Does NOT capture password fields (for security)
+### Step 3: Start Typing
+Type anywhere on the page - your keystrokes are being captured!
 
----
-
-## Installation Guide
-
-### Part 1: Installing the Web Application
-
-The web application lets you view the admin dashboard from any browser.
-
-#### Step-by-Step Instructions:
-
-1. **Download the Project**
-   - Download this entire project folder to your computer
-   - Remember where you saved it (e.g., `Desktop/keyboard-monitor`)
-
-2. **Install Node.js** (if you don't have it)
-   - Go to: https://nodejs.org/
-   - Download and install the "LTS" version
-   - After installation, open your terminal/command prompt and type `node --version` to verify it works
-
-3. **Open Your Terminal/Command Prompt**
-   - **Windows**: Press `Win + R`, type `cmd`, press Enter
-   - **Mac**: Press `Cmd + Space`, type `Terminal`, press Enter
-   - **Linux**: Press `Ctrl + Alt + T`
-
-4. **Navigate to the Project Folder**
-   ```bash
-   cd Desktop/keyboard-monitor
-   ```
-   (Replace with your actual folder location)
-
-5. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-   Wait for this to complete (about 30 seconds)
-
-6. **Start the Application**
-   ```bash
-   npm run dev
-   ```
-
-7. **Open in Browser**
-   - Open Chrome, Firefox, or Edge
-   - Go to: `http://localhost:3000`
-   - You should see the monitoring page
-
-8. **Using the App**
-   - Click "Start Monitoring" to begin recording keystrokes
-   - Type anywhere on the page - keystrokes will be captured
-   - Click "Admin" in the top navigation
-   - Enter password: `862412`
-   - View all recorded keystrokes in the admin dashboard
+**That's all! Your keystrokes are now being saved to the cloud automatically.**
 
 ---
 
-### Part 2: Installing the Chrome Extension (For Browser-Wide Monitoring)
+## View Recorded Data
 
-The extension captures keystrokes from ALL browser tabs, not just the web app.
-
-#### Step-by-Step Instructions:
-
-1. **Open Chrome Extensions Page**
-   - Open Google Chrome
-   - Click the three dots (menu) in the top-right corner
-   - Hover over "More tools"
-   - Click "Extensions"
-   - OR simply type this address: `chrome://extensions/`
-
-2. **Enable Developer Mode**
-   - Look for a toggle switch called "Developer mode" in the TOP-RIGHT corner
-   - Click it to turn it ON (it should turn blue)
-   - You'll see new buttons appear
-
-3. **Load the Extension**
-   - Click the button that says "Load unpacked" (left side)
-   - A file browser window will open
-   - Navigate to your project folder
-   - Select the folder called `extension`
-   - Click "Select Folder"
-
-4. **Verify Installation**
-   - You should now see "Parental Keyboard Monitor" in your extensions list
-   - You'll see a keyboard icon in your Chrome toolbar (top-right)
-
-5. **Using the Extension**
-   - Click the keyboard icon in your toolbar
-   - Click "Start Monitoring" button
-   - The extension will now capture ALL keystrokes from ALL tabs
-   - Click "Open Admin Dashboard" to view captured data
+1. Click the **Admin** button in the top right
+2. Enter password: `862412`
+3. See all recorded keystrokes organized by device and session
 
 ---
 
-## How to Use the Application
+## Questions?
 
-### Monitor Page (Main Screen)
+### Do I need to install anything?
+**No!** The web app works immediately in your browser. No downloads, no installations.
 
-1. When you first open the app, you'll see a consent popup
-2. Click "Start Monitoring" to begin
-3. The status will change from "Inactive" to "Active" (green)
-4. Start typing - every keystroke will be recorded
-5. You'll see:
-   - **Total Keystrokes**: How many keys you've typed
-   - **Sessions**: How many typing sessions (pauses create new sessions)
-   - **Today**: Keystrokes typed today
+### Can I monitor other tabs/websites?
+The web app only monitors the page you're on. For browser-wide monitoring, you can optionally install the Chrome extension (advanced users only - see below).
 
-### Admin Dashboard
+### Where is my data stored?
+Your data is stored securely in the cloud. It persists even after you close the browser.
 
-1. Click "Admin" in the top navigation
-2. Enter the admin password: `862412`
-3. You'll see:
-   - All registered devices
-   - Total keystrokes across all devices
-   - Sessions and daily statistics
-
-4. **View Device Details**
-   - Click on any device card
-   - See all typing sessions from that device
-
-5. **View Session Keystrokes**
-   - Click on any session
-   - See exactly what was typed, with timestamps
-
-6. **Clear All Data**
-   - Scroll to "Danger Zone"
-   - Click "Clear All Data" to delete everything
+### How do I reset everything?
+Click the "Device Information" section at the bottom, then click "Reset Device".
 
 ---
 
-## Changing the Admin Password
+## Optional: Chrome Extension (Advanced)
 
-To change the admin password:
+**Most users don't need this.** Only install if you want to monitor ALL browser tabs automatically.
 
-1. Open the file `src/main.js`
-2. Find line that says: `const ADMIN_PASSWORD = '862412';`
-3. Change `862412` to your desired password
-4. Save the file
-5. The app will reload automatically
+### Quick Setup:
+
+1. Open Chrome and type: `chrome://extensions/`
+2. Turn ON "Developer mode" (top right toggle)
+3. Click "Load unpacked"
+4. Select the `extension` folder from this project
+5. Click the keyboard icon in your toolbar, then click "Start Monitoring"
+
+Done! Now ALL tabs will be monitored automatically.
+
+---
+
+## Changing Admin Password
+
+1. Open `src/main.js` file
+2. Find line: `const ADMIN_PASSWORD = '862412';`
+3. Change `862412` to your new password
+4. Save and refresh
+
+---
+
+## Features
+
+- Instant one-click start
+- Real-time keystroke counter
+- Live typing preview
+- Session grouping (pauses create new sessions)
+- View all activity in Admin dashboard
+- Password protected admin access
+- Device identification
+- Secure cloud storage
 
 ---
 
 ## Troubleshooting
 
-### "I don't see the start popup"
-- Clear your browser storage: Open Developer Tools (F12) > Application > Clear Storage > Clear site data
-- Refresh the page
-
-### "Keystrokes aren't being recorded"
+**Keystrokes not recording?**
 - Make sure you clicked "Start Monitoring"
-- Check that the status shows "Active" (green)
-- Check the browser console for errors (F12)
+- Check if status shows "Live" (green)
 
-### "Extension not working"
-- Go to `chrome://extensions/`
-- Make sure the extension is enabled (toggle is blue)
-- Click the refresh icon on the extension card
-- Make sure you clicked "Start Monitoring" in the extension popup
+**Admin page not opening?**
+- Password is: `862412`
 
-### "Admin page won't open"
-- Make sure you're entering the correct password: `862412`
-- Check for any error messages
-
-### "I want to completely reset the app"
-- Open Developer Tools (F12)
-- Go to Application > Storage
-- Click "Clear site data"
-- Refresh the page
+**Want to start fresh?**
+- Expand "Device Information"
+- Click "Reset Device"
 
 ---
 
 ## Privacy & Legal
 
-- This tool is for monitoring devices you OWN
-- Use responsibly and in accordance with local laws
-- Inform users that they are being monitored
-- Password fields are NEVER recorded (for security)
-- Data is stored securely in a cloud database
-
----
-
-## Files Included
-
-| File | Purpose |
-|------|---------|
-| `index.html` | Main web application |
-| `src/main.js` | Application logic |
-| `src/styles.css` | Styling |
-| `package.json` | Dependencies |
-| `extension/` | Chrome extension files |
-
----
-
-## Support
-
-If you encounter issues:
-1. Check the browser console for errors (press F12)
-2. Make sure all dependencies are installed (`npm install`)
-3. Try clearing browser storage and refreshing
-
----
-
-## License
-
-This software is provided for legitimate parental control purposes only. Misuse is prohibited.
+This tool is for monitoring devices you own. Use responsibly and in accordance with local laws. Password fields are never recorded for security.

@@ -21,7 +21,7 @@
         </div>
       </div>
       <h2>Parental Keyboard Monitor</h2>
-      <p class="modal-description">Secure monitoring for devices you own. All keyboard activity will be recorded and stored safely.</p>
+      <p class="modal-description">Monitor keyboard activity on this device. Works instantly - no installation required.</p>
       <div class="consent-box">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
@@ -33,8 +33,9 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
           <polygon points="5 3 19 12 5 21 5 3"/>
         </svg>
-        Start Monitoring
+        Start Monitoring Now
       </button>
+      <p class="modal-note">Monitoring begins instantly. Just type anywhere on the page.</p>
     </div>
   </div>
 
@@ -48,7 +49,7 @@
         </svg>
       </div>
       <h2>Admin Access</h2>
-      <p class="modal-description">Enter your password to access the dashboard</p>
+      <p class="modal-description">Enter password to view recorded activity</p>
       <form id="login-form">
         <input type="password" id="admin-password" placeholder="Enter admin password" required>
         <button type="submit" class="btn-start">Enter Dashboard</button>
@@ -96,24 +97,30 @@
         <div class="status-card">
           <div class="status-indicator">
             <span class="status-dot" id="status-dot"></span>
-            <span class="status-text" id="status-text">Ready to Monitor</span>
+            <span class="status-text" id="status-text">Click Start to Begin</span>
           </div>
           <div class="status-badge" id="status-badge">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="12" cy="12" r="10"/>
             </svg>
-            <span id="badge-text">Inactive</span>
+            <span id="badge-text">Waiting</span>
           </div>
         </div>
 
-        <!-- Hero Section -->
-        <div class="hero-section">
-          <div class="hero-content">
-            <h2>Keyboard Activity Monitor</h2>
-            <p>Recording all keyboard activity securely. Your data is encrypted and stored safely in the cloud.</p>
+        <!-- Live Typing Area -->
+        <div class="typing-section" id="typing-section">
+          <div class="typing-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h8M6 16h12"/>
+            </svg>
+            <h2>Type Here to Test</h2>
           </div>
-          <div class="hero-visual">
-            <img src="https://images.pexels.com/photos/258244/pexels-photo-258244.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Keyboard" class="hero-image">
+          <p class="typing-hint">Click below and start typing. Your keystrokes will be captured instantly.</p>
+          <textarea id="typing-area" class="typing-area" placeholder="Click here and start typing... Every keystroke will be recorded and saved to the cloud."></textarea>
+          <div class="typing-live">
+            <span class="live-label">Live Preview:</span>
+            <span class="live-text" id="live-text">Start typing above...</span>
           </div>
         </div>
 
@@ -155,16 +162,10 @@
           </div>
         </div>
 
-        <!-- Device Info -->
-        <div class="device-card">
-          <div class="device-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="2" y="3" width="20" height="14" rx="2"/>
-              <path d="M8 21h8M12 17v4"/>
-            </svg>
-            <h3>Device Information</h3>
-          </div>
-          <div class="device-info">
+        <!-- Device Info (Collapsed) -->
+        <details class="device-details">
+          <summary>Device Information</summary>
+          <div class="device-card">
             <div class="device-row">
               <span class="device-label">Device ID</span>
               <code class="device-id" id="device-id">Loading...</code>
@@ -173,54 +174,37 @@
               <span class="device-label">Status</span>
               <span class="device-status" id="device-status">Initializing...</span>
             </div>
-          </div>
-          <button id="reset-btn" class="btn-reset">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <path d="M3 3v5h5"/>
-            </svg>
-            Reset Device
-          </button>
-        </div>
-
-        <!-- Extension Notice -->
-        <div class="extension-card">
-          <div class="extension-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 16v-4M12 8h.01"/>
-            </svg>
-          </div>
-          <div class="extension-content">
-            <h3>Browser-Wide Monitoring</h3>
-            <p>For full browser monitoring across all tabs, install the Chrome extension:</p>
-            <ol class="extension-steps">
-              <li>
-                <span class="step-number">1</span>
-                <span>Download the <code>extension</code> folder</span>
-              </li>
-              <li>
-                <span class="step-number">2</span>
-                <span>Open Chrome and go to <code>chrome://extensions/</code></span>
-              </li>
-              <li>
-                <span class="step-number">3</span>
-                <span>Enable "Developer mode" (top right)</span>
-              </li>
-              <li>
-                <span class="step-number">4</span>
-                <span>Click "Load unpacked" and select the folder</span>
-              </li>
-            </ol>
-            <div class="extension-note">
+            <button id="reset-btn" class="btn-reset">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
               </svg>
-              One-time setup takes about 30 seconds.
+              Reset Device
+            </button>
+          </div>
+        </details>
+
+        <!-- Extension Info (Collapsed - Optional) -->
+        <details class="extension-details">
+          <summary>Want to monitor ALL browser tabs? (Optional)</summary>
+          <div class="extension-card">
+            <div class="extension-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            </div>
+            <div class="extension-content">
+              <p>The web app above only monitors THIS page. To monitor ALL browser tabs automatically, you can install the extension (one-time setup):</p>
+              <ol class="extension-steps">
+                <li><span class="step-number">1</span><span>Open Chrome and type <code>chrome://extensions/</code></span></li>
+                <li><span class="step-number">2</span><span>Turn ON "Developer mode" (top right)</span></li>
+                <li><span class="step-number">3</span><span>Click "Load unpacked"</span></li>
+                <li><span class="step-number">4</span><span>Select the <code>extension</code> folder from this project</span></li>
+              </ol>
             </div>
           </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -231,7 +215,7 @@
         <div class="admin-header">
           <div class="admin-title">
             <h2>Admin Dashboard</h2>
-            <p>View and manage all recorded keyboard activity</p>
+            <p>View all recorded keyboard activity</p>
           </div>
           <button id="logout-btn" class="btn-logout">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

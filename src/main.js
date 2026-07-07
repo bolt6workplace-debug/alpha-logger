@@ -46,31 +46,68 @@ async function init() {
 
   initRouter();
   initAuth();
+  initTypingArea();
   loadSessionCount();
   loadTodayCount();
 }
 
 function startMonitoring() {
   isMonitoring = true;
+
+  // Update status
   document.getElementById('status-dot').classList.add('active');
-  document.getElementById('status-text').textContent = 'Recording';
+  document.getElementById('status-text').textContent = 'Recording - Type below';
   document.getElementById('device-status').textContent = 'Active';
   document.getElementById('device-status').style.color = 'var(--success)';
 
   const statusBadge = document.getElementById('status-badge');
   statusBadge.classList.add('active');
-  document.getElementById('badge-text').textContent = 'Active';
+  document.getElementById('badge-text').textContent = 'Live';
 
-  document.addEventListener('keydown', handleKey);
+  // Global keydown listener for the page
+  document.addEventListener('keydown', handleGlobalKey);
+
   console.log('Monitoring started:', deviceId);
 }
 
-async function handleKey(e) {
-  // Skip password input and textarea in admin
+// Handle keys typed outside the textarea (for testing)
+async function handleGlobalKey(e) {
+  // Don't process if typing in textarea (handled separately)
+  if (e.target.id === 'typing-area') return;
+  // Don't process password inputs
   if (e.target.tagName === 'INPUT' && e.target.type === 'password') return;
-  if (e.target.tagName === 'TEXTAREA') return;
 
-  showFlash(e.key);
+  // Process the keystroke
+  await processKeystroke(e.key, e.keyCode);
+}
+
+// Initialize the typing area
+function initTypingArea() {
+  const typingArea = document.getElementById('typing-area');
+  const liveText = document.getElementById('live-text');
+
+  if (!typingArea) return;
+
+  typingArea.addEventListener('input', async (e) => {
+    const text = e.target.value;
+
+    // Update live preview
+    if (text.length > 0) {
+      liveText.textContent = text.length > 100 ? text.substring(0, 100) + '...' : text;
+    } else {
+      liveText.textContent = 'Start typing above...';
+    }
+  });
+
+  typingArea.addEventListener('keydown', async (e) => {
+    // Process each keystroke
+    await processKeystroke(e.key, e.keyCode);
+  });
+}
+
+// Process and save a keystroke
+async function processKeystroke(key, keyCode) {
+  showFlash(key);
 
   if (typingTimer) clearTimeout(typingTimer);
 
@@ -105,8 +142,8 @@ async function handleKey(e) {
   try {
     await supabase.from('keystroke_logs').insert([{
       session_id: deviceId,
-      key_text: e.key,
-      key_code: e.keyCode,
+      key_text: key,
+      key_code: keyCode,
       timestamp: new Date().toISOString(),
       page_url: window.location.href,
       device_id: deviceId,
@@ -173,7 +210,7 @@ function showFlash(key) {
   const keyEl = document.getElementById('flash-key');
   keyEl.textContent = key.length === 1 ? key : `[${key}]`;
   flash.classList.add('active');
-  setTimeout(() => flash.classList.remove('active'), 500);
+  setTimeout(() => flash.classList.remove('active'), 400);
 }
 
 function initRouter() {
