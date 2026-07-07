@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyboard Monitor</title>
+  <link rel="stylesheet" href="/src/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Start Modal - Shows on first visit -->
+  <div id="start-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h8M6 16h12"/>
+        </svg>
+      </div>
+      <h2>Keyboard Monitor</h2>
+      <p class="modal-description">For parental control on devices you own. All keyboard activity will be recorded securely.</p>
+      <div class="consent-box">
+        <p>By clicking Start, you consent to monitoring on this device.</p>
+      </div>
+      <button id="start-btn" class="btn-start">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Start Monitoring
+      </button>
+    </div>
+  </div>
+
+  <!-- Login Modal for Admin -->
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <h2>Admin Access</h2>
+      <form id="login-form">
+        <input type="password" id="admin-password" placeholder="Enter password" required>
+        <button type="submit" class="btn-start">Enter</button>
+      </form>
+      <p id="login-error"></p>
+    </div>
+  </div>
+
+  <div class="container">
+    <nav class="nav">
+      <a href="/" class="nav-link active" data-page="monitor">Monitor</a>
+      <a href="#admin" class="nav-link" data-page="admin">Admin</a>
+    </nav>
+
+    <!-- Monitor Page -->
+    <section id="monitor-page" class="page active">
+      <div class="card">
+        <div class="status-bar">
+          <span class="status-dot" id="status-dot"></span>
+          <span class="status-text" id="status-text">Ready</span>
+        </div>
+
+        <h1>Keyboard Monitor</h1>
+        <p class="subtitle">Recording all keyboard activity on this page.</p>
+
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-value" id="keystroke-count">0</span>
+            <span class="stat-label">Keystrokes</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="session-count">0</span>
+            <span class="stat-label">Sessions</span>
+          </div>
+        </div>
+
+        <div class="device-box">
+          <span class="device-label">Device ID:</span>
+          <code id="device-id" class="device-id">---</code>
+        </div>
+
+        <button id="reset-btn" class="btn-reset">Reset Device</button>
+
+        <!-- Extension Notice -->
+        <div class="extension-notice">
+          <h3>Record ALL Browser Tabs?</h3>
+          <p>For full browser monitoring (all tabs, all websites), install the extension:</p>
+          <ol>
+            <li>Download the <code>extension</code> folder from this project</li>
+            <li>Open Chrome → <code>chrome://extensions/</code></li>
+            <li>Turn on "Developer mode" (top right)</li>
+            <li>Click "Load unpacked" → Select the folder</li>
+          </ol>
+          <p class="note">This one-time setup takes 30 seconds. After that, it works automatically forever.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Dashboard -->
+    <section id="admin-page" class="page">
+      <div class="card">
+        <div class="admin-header">
+          <div>
+            <h1>Admin Dashboard</h1>
+            <p class="subtitle">All recorded keyboard activity.</p>
+          </div>
+          <button id="logout-btn" class="btn-reset">Logout</button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-value" id="total-keystrokes">0</span>
+            <span class="stat-label">Total Keys</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="total-devices">0</span>
+            <span class="stat-label">Devices</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="total-sessions">0</span>
+            <span class="stat-label">Sessions</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="today-keystrokes">0</span>
+            <span class="stat-label">Today</span>
+          </div>
+        </div>
+
+        <div id="devices-container">
+          <div class="section-title">Devices</div>
+          <div id="devices-list" class="devices-grid">
+            <div class="loading">Loading...</div>
+          </div>
+        </div>
+
+        <div id="sessions-container" style="display: none;">
+          <button id="back-to-devices" class="btn-back">← Back to Devices</button>
+          <div class="section-title" id="sessions-title">Sessions</div>
+          <div id="sessions-list" class="sessions-list"></div>
+        </div>
+
+        <div id="keystrokes-container" style="display: none;">
+          <button id="back-to-sessions" class="btn-back">← Back to Sessions</button>
+          <div class="section-title">Keystrokes</div>
+          <div id="keystrokes-list" class="keystrokes-display"></div>
+        </div>
+
+        <button id="clear-all-btn" class="btn-danger">Clear All Data</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Keystroke notification -->
+  <div id="keystroke-flash" class="keystroke-flash">
+    <span id="flash-key"></span> captured
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

